@@ -87,6 +87,8 @@ function advanceTimers(currentTime) {
       pop(timerQueue);
     } else if (timer.startTime <= currentTime) {
       // Timer fired. Transfer to the task queue.
+
+      // 将延迟任务放入taskQueue中执行
       pop(timerQueue);
       timer.sortIndex = timer.expirationTime;
       push(taskQueue, timer);
@@ -161,6 +163,7 @@ function flushWork(hasTimeRemaining, initialTime) {
   }
 }
 
+// 返回true代表有task， 返回false表示没有task
 function workLoop(hasTimeRemaining, initialTime) {
   let currentTime = initialTime;
   advanceTimers(currentTime);
@@ -184,7 +187,10 @@ function workLoop(hasTimeRemaining, initialTime) {
       markTaskRun(currentTask, currentTime);
       const continuationCallback = callback(didUserCallbackTimeout);
       currentTime = getCurrentTime();
+
       if (typeof continuationCallback === 'function') {
+        // 如果callback返回值是个函数，那么将返回值再赋值给callback
+        // TODO：作用？？
         currentTask.callback = continuationCallback;
         markTaskYield(currentTask, currentTime);
       } else {
@@ -206,6 +212,7 @@ function workLoop(hasTimeRemaining, initialTime) {
   if (currentTask !== null) {
     return true;
   } else {
+    // 如果没有任务就查看延迟任务
     const firstTimer = peek(timerQueue);
     if (firstTimer !== null) {
       requestHostTimeout(handleTimeout, firstTimer.startTime - currentTime);
@@ -295,6 +302,7 @@ function timeoutForPriorityLevel(priorityLevel) {
 function unstable_scheduleCallback(priorityLevel, callback, options) {
   var currentTime = getCurrentTime();
 
+  // 设置startTime 和 timeout
   var startTime;
   var timeout;
   if (typeof options === 'object' && options !== null) {
@@ -313,8 +321,10 @@ function unstable_scheduleCallback(priorityLevel, callback, options) {
     startTime = currentTime;
   }
 
+  // 计算过期时间
   var expirationTime = startTime + timeout;
 
+  // 构造Task
   var newTask = {
     id: taskIdCounter++,
     callback,
@@ -327,6 +337,8 @@ function unstable_scheduleCallback(priorityLevel, callback, options) {
     newTask.isQueued = false;
   }
 
+  // 延迟任务放在timerQueue里，正常的任务放在TaskQueue里
+  // 延迟任务与options里delay参数有关
   if (startTime > currentTime) {
     // This is a delayed task.
     newTask.sortIndex = startTime;
