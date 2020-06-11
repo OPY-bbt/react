@@ -90,51 +90,54 @@ describe('Scheduler', () => {
     expect(Scheduler).toFlushAndYield(['C', 'D', 'B']);
   });
 
-  // it('expires work', () => {
-  //   scheduleCallback(NormalPriority, didTimeout => {
-  //     Scheduler.unstable_advanceTime(100);
-  //     Scheduler.unstable_yieldValue(`A (did timeout: ${didTimeout})`);
-  //   });
-  //   scheduleCallback(UserBlockingPriority, didTimeout => {
-  //     Scheduler.unstable_advanceTime(100);
-  //     Scheduler.unstable_yieldValue(`B (did timeout: ${didTimeout})`);
-  //   });
-  //   scheduleCallback(UserBlockingPriority, didTimeout => {
-  //     Scheduler.unstable_advanceTime(100);
-  //     Scheduler.unstable_yieldValue(`C (did timeout: ${didTimeout})`);
-  //   });
+  it('expires work', () => {
+    scheduleCallback(NormalPriority, didTimeout => {
+      Scheduler.unstable_advanceTime(100);
+      Scheduler.unstable_yieldValue(`A (did timeout: ${didTimeout})`);
+    });
+    scheduleCallback(UserBlockingPriority, didTimeout => {
+      Scheduler.unstable_advanceTime(100);
+      Scheduler.unstable_yieldValue(`B (did timeout: ${didTimeout})`);
+    });
+    scheduleCallback(UserBlockingPriority, didTimeout => {
+      Scheduler.unstable_advanceTime(100);
+      Scheduler.unstable_yieldValue(`C (did timeout: ${didTimeout})`);
+    });
 
-  //   // Advance time, but not by enough to expire any work
-  //   Scheduler.unstable_advanceTime(249);
-  //   expect(Scheduler).toHaveYielded([]);
+    // Advance time, but not by enough to expire any work
+    Scheduler.unstable_advanceTime(249);
+    expect(Scheduler).toHaveYielded([]);
 
-  //   // Schedule a few more callbacks
-  //   scheduleCallback(NormalPriority, didTimeout => {
-  //     Scheduler.unstable_advanceTime(100);
-  //     Scheduler.unstable_yieldValue(`D (did timeout: ${didTimeout})`);
-  //   });
-  //   scheduleCallback(NormalPriority, didTimeout => {
-  //     Scheduler.unstable_advanceTime(100);
-  //     Scheduler.unstable_yieldValue(`E (did timeout: ${didTimeout})`);
-  //   });
+    // Schedule a few more callbacks
+    scheduleCallback(NormalPriority, didTimeout => {
+      Scheduler.unstable_advanceTime(100);
+      Scheduler.unstable_yieldValue(`D (did timeout: ${didTimeout})`);
+    });
+    scheduleCallback(NormalPriority, didTimeout => {
+      Scheduler.unstable_advanceTime(100);
+      Scheduler.unstable_yieldValue(`E (did timeout: ${didTimeout})`);
+    });
 
-  //   // Advance by just a bit more to expire the user blocking callbacks
-  //   Scheduler.unstable_advanceTime(1);
-  //   expect(Scheduler).toFlushExpired([
-  //     'B (did timeout: true)',
-  //     'C (did timeout: true)',
-  //   ]);
+    // Advance by just a bit more to expire the user blocking callbacks
 
-  //   // Expire A
-  //   Scheduler.unstable_advanceTime(4600);
-  //   expect(Scheduler).toFlushExpired(['A (did timeout: true)']);
+    // currentTime被设置成249 + 1 而 UserBlockingPriority 的timeout为250，所以超时执行
+    Scheduler.unstable_advanceTime(1);
+    expect(Scheduler).toFlushExpired([
+      'B (did timeout: true)',
+      'C (did timeout: true)',
+    ]);
 
-  //   // Flush the rest without expiring
-  //   expect(Scheduler).toFlushAndYield([
-  //     'D (did timeout: false)',
-  //     'E (did timeout: true)',
-  //   ]);
-  // });
+    // Expire A
+    // 250 + 100 + 100 + 4600 > 5000(NORMAL_PRIORITY_TIMEOUT)
+    Scheduler.unstable_advanceTime(4600);
+    expect(Scheduler).toFlushExpired(['A (did timeout: true)']);
+
+    // Flush the rest without expiring
+    expect(Scheduler).toFlushAndYield([
+      'D (did timeout: false)',
+      'E (did timeout: true)',
+    ]);
+  });
 
   // it('has a default expiration of ~5 seconds', () => {
   //   scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('A'));
