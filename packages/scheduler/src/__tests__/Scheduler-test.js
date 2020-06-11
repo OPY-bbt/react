@@ -53,39 +53,42 @@ describe('Scheduler', () => {
     expect(Scheduler).toFlushAndYield(['D']);
   });
 
-  // it('cancels work', () => {
-  //   scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('A'));
-  //   const callbackHandleB = scheduleCallback(NormalPriority, () =>
-  //     Scheduler.unstable_yieldValue('B'),
-  //   );
-  //   scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('C'));
+  it('cancels work', () => {
+    scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('A'));
+    const callbackHandleB = scheduleCallback(NormalPriority, () =>
+      Scheduler.unstable_yieldValue('B'),
+    );
+    scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('C'));
 
-  //   cancelCallback(callbackHandleB);
+    // 取消任务即把task.callback设置为null，
+    cancelCallback(callbackHandleB);
 
-  //   expect(Scheduler).toFlushAndYield([
-  //     'A',
-  //     // B should have been cancelled
-  //     'C',
-  //   ]);
-  // });
+    expect(Scheduler).toFlushAndYield([
+      'A',
+      // B should have been cancelled
+      'C',
+    ]);
+  });
 
-  // it('executes the highest priority callbacks first', () => {
-  //   scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('A'));
-  //   scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('B'));
+  it('executes the highest priority callbacks first', () => {
+    // 这加入taskQueue时，是按照priority，用最小堆排序算法排序的
 
-  //   // Yield before B is flushed
-  //   expect(Scheduler).toFlushAndYieldThrough(['A']);
+    scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('A'));
+    scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('B'));
 
-  //   scheduleCallback(UserBlockingPriority, () =>
-  //     Scheduler.unstable_yieldValue('C'),
-  //   );
-  //   scheduleCallback(UserBlockingPriority, () =>
-  //     Scheduler.unstable_yieldValue('D'),
-  //   );
+    // Yield before B is flushed
+    expect(Scheduler).toFlushAndYieldThrough(['A']);
 
-  //   // C and D should come first, because they are higher priority
-  //   expect(Scheduler).toFlushAndYield(['C', 'D', 'B']);
-  // });
+    scheduleCallback(UserBlockingPriority, () =>
+      Scheduler.unstable_yieldValue('C'),
+    );
+    scheduleCallback(UserBlockingPriority, () =>
+      Scheduler.unstable_yieldValue('D'),
+    );
+
+    // C and D should come first, because they are higher priority
+    expect(Scheduler).toFlushAndYield(['C', 'D', 'B']);
+  });
 
   // it('expires work', () => {
   //   scheduleCallback(NormalPriority, didTimeout => {

@@ -204,6 +204,7 @@ function workLoop(hasTimeRemaining, initialTime) {
       }
       advanceTimers(currentTime);
     } else {
+      // 已经取消的任务，调用unstable_cancelCallback方法取消任务
       pop(taskQueue);
     }
     currentTask = peek(taskQueue);
@@ -299,6 +300,7 @@ function timeoutForPriorityLevel(priorityLevel) {
   }
 }
 
+// 返回新建的task
 function unstable_scheduleCallback(priorityLevel, callback, options) {
   var currentTime = getCurrentTime();
 
