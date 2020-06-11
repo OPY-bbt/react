@@ -190,7 +190,7 @@ function workLoop(hasTimeRemaining, initialTime) {
 
       if (typeof continuationCallback === 'function') {
         // 如果callback返回值是个函数，那么将返回值再赋值给callback
-        // TODO：作用？？
+        // 当前任务可能会有n个子任务，保存子任务回调
         currentTask.callback = continuationCallback;
         markTaskYield(currentTask, currentTime);
       } else {

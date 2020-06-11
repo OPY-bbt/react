@@ -139,63 +139,63 @@ describe('Scheduler', () => {
     ]);
   });
 
-  // it('has a default expiration of ~5 seconds', () => {
-  //   scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('A'));
+  it('has a default expiration of ~5 seconds', () => {
+    scheduleCallback(NormalPriority, () => Scheduler.unstable_yieldValue('A'));
 
-  //   Scheduler.unstable_advanceTime(4999);
-  //   expect(Scheduler).toHaveYielded([]);
+    Scheduler.unstable_advanceTime(4999);
+    expect(Scheduler).toHaveYielded([]);
 
-  //   Scheduler.unstable_advanceTime(1);
-  //   expect(Scheduler).toFlushExpired(['A']);
-  // });
+    Scheduler.unstable_advanceTime(1);
+    expect(Scheduler).toFlushExpired(['A']);
+  });
 
-  // it('continues working on same task after yielding', () => {
-  //   scheduleCallback(NormalPriority, () => {
-  //     Scheduler.unstable_advanceTime(100);
-  //     Scheduler.unstable_yieldValue('A');
-  //   });
-  //   scheduleCallback(NormalPriority, () => {
-  //     Scheduler.unstable_advanceTime(100);
-  //     Scheduler.unstable_yieldValue('B');
-  //   });
+  it('continues working on same task after yielding', () => {
+    scheduleCallback(NormalPriority, () => {
+      Scheduler.unstable_advanceTime(100);
+      Scheduler.unstable_yieldValue('A');
+    });
+    scheduleCallback(NormalPriority, () => {
+      Scheduler.unstable_advanceTime(100);
+      Scheduler.unstable_yieldValue('B');
+    });
 
-  //   let didYield = false;
-  //   const tasks = [
-  //     ['C1', 100],
-  //     ['C2', 100],
-  //     ['C3', 100],
-  //   ];
-  //   const C = () => {
-  //     while (tasks.length > 0) {
-  //       const [label, ms] = tasks.shift();
-  //       Scheduler.unstable_advanceTime(ms);
-  //       Scheduler.unstable_yieldValue(label);
-  //       if (shouldYield()) {
-  //         didYield = true;
-  //         return C;
-  //       }
-  //     }
-  //   };
+    let didYield = false;
+    const tasks = [
+      ['C1', 100],
+      ['C2', 100],
+      ['C3', 100],
+    ];
+    const C = () => {
+      while (tasks.length > 0) {
+        const [label, ms] = tasks.shift();
+        Scheduler.unstable_advanceTime(ms);
+        Scheduler.unstable_yieldValue(label);
+        if (shouldYield()) {
+          didYield = true;
+          return C;
+        }
+      }
+    };
 
-  //   scheduleCallback(NormalPriority, C);
+    scheduleCallback(NormalPriority, C);
 
-  //   scheduleCallback(NormalPriority, () => {
-  //     Scheduler.unstable_advanceTime(100);
-  //     Scheduler.unstable_yieldValue('D');
-  //   });
-  //   scheduleCallback(NormalPriority, () => {
-  //     Scheduler.unstable_advanceTime(100);
-  //     Scheduler.unstable_yieldValue('E');
-  //   });
+    scheduleCallback(NormalPriority, () => {
+      Scheduler.unstable_advanceTime(100);
+      Scheduler.unstable_yieldValue('D');
+    });
+    scheduleCallback(NormalPriority, () => {
+      Scheduler.unstable_advanceTime(100);
+      Scheduler.unstable_yieldValue('E');
+    });
 
-  //   // Flush, then yield while in the middle of C.
-  //   expect(didYield).toBe(false);
-  //   expect(Scheduler).toFlushAndYieldThrough(['A', 'B', 'C1']);
-  //   expect(didYield).toBe(true);
+    // Flush, then yield while in the middle of C.
+    expect(didYield).toBe(false);
+    expect(Scheduler).toFlushAndYieldThrough(['A', 'B', 'C1']);
+    expect(didYield).toBe(true);
 
-  //   // When we resume, we should continue working on C.
-  //   expect(Scheduler).toFlushAndYield(['C2', 'C3', 'D', 'E']);
-  // });
+    // When we resume, we should continue working on C.
+    expect(Scheduler).toFlushAndYield(['C2', 'C3', 'D', 'E']);
+  });
 
   // it('continuation callbacks inherit the expiration of the previous callback', () => {
   //   const tasks = [
