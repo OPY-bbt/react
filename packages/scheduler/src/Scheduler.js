@@ -189,8 +189,7 @@ function workLoop(hasTimeRemaining, initialTime) {
       currentTime = getCurrentTime();
 
       if (typeof continuationCallback === 'function') {
-        // 如果callback返回值是个函数，那么将返回值再赋值给callback
-        // 当前任务可能会有n个子任务，保存子任务回调
+        // 当前任务执行过程中被中断，则将之后需要继续执行的callback保存下来
         currentTask.callback = continuationCallback;
         markTaskYield(currentTask, currentTime);
       } else {
