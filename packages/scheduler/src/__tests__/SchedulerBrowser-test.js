@@ -142,53 +142,55 @@ describe('SchedulerBrowser', () => {
     };
   }
 
-  it('task that finishes before deadline', () => {
-    scheduleCallback(NormalPriority, () => {
-      runtime.log('Task');
-    });
-    runtime.assertLog(['Post Message']);
-    runtime.fireMessageEvent();
-    runtime.assertLog(['Message Event', 'Task']);
-  });
+  // it('task that finishes before deadline', () => {
+  //   scheduleCallback(NormalPriority, () => {
+  //     runtime.log('Task');
+  //   });
+  //   runtime.assertLog(['Post Message']);
+  //   runtime.fireMessageEvent();
+  //   runtime.assertLog(['Message Event', 'Task']);
+  // });
 
-  it('task with continuation', () => {
-    scheduleCallback(NormalPriority, () => {
-      runtime.log('Task');
-      while (!Scheduler.unstable_shouldYield()) {
-        runtime.advanceTime(1);
-      }
-      runtime.log(`Yield at ${performance.now()}ms`);
-      return () => {
-        runtime.log('Continuation');
-      };
-    });
-    runtime.assertLog(['Post Message']);
+  // it('task with continuation', () => {
+  //   scheduleCallback(NormalPriority, () => {
+  //     runtime.log('Task');
+  //     while (!Scheduler.unstable_shouldYield()) {
+  //       runtime.advanceTime(1);
+  //     }
+  //     runtime.log(`Yield at ${performance.now()}ms`);
+  //     return () => {
+  //       runtime.log('Continuation');
+  //     };
+  //   });
+  //   runtime.assertLog(['Post Message']);
 
-    runtime.fireMessageEvent();
-    runtime.assertLog([
-      'Message Event',
-      'Task',
-      'Yield at 5ms',
-      'Post Message',
-    ]);
+  //   runtime.fireMessageEvent();
+  //   runtime.assertLog([
+  //     'Message Event',
+  //     'Task',
+  //     'Yield at 5ms',
+  //     'Post Message',
+  //   ]);
 
-    runtime.fireMessageEvent();
-    runtime.assertLog(['Message Event', 'Continuation']);
-  });
+  //   runtime.fireMessageEvent();
+  //   runtime.assertLog(['Message Event', 'Continuation']);
+  // });
 
-  it('multiple tasks', () => {
-    scheduleCallback(NormalPriority, () => {
-      runtime.log('A');
-    });
-    scheduleCallback(NormalPriority, () => {
-      runtime.log('B');
-    });
-    runtime.assertLog(['Post Message']);
-    runtime.fireMessageEvent();
-    runtime.assertLog(['Message Event', 'A', 'B']);
-  });
+  // it('multiple tasks', () => {
+  //   scheduleCallback(NormalPriority, () => {
+  //     runtime.log('A');
+  //   });
+  //   scheduleCallback(NormalPriority, () => {
+  //     runtime.log('B');
+  //   });
+  //   runtime.assertLog(['Post Message']);
+  //   runtime.fireMessageEvent();
+  //   runtime.assertLog(['Message Event', 'A', 'B']);
+  // });
 
   it('multiple tasks with a yield in between', () => {
+    // 时间切片为5ms，当设置时间4999之后时，当前时间切片已经用完，所以yield之后，异步执行下一个task
+
     scheduleCallback(NormalPriority, () => {
       runtime.log('A');
       runtime.advanceTime(4999);
