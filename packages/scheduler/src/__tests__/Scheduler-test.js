@@ -128,7 +128,7 @@ describe('Scheduler', () => {
     ]);
 
     // Expire A
-    // 250 + 100 + 100 + 4600 > 5000(NORMAL_PRIORITY_TIMEOUT)
+    // 250 + 100 + 100 + 4600 = 5050 > 5000(NORMAL_PRIORITY_TIMEOUT)
     Scheduler.unstable_advanceTime(4600);
     expect(Scheduler).toFlushExpired(['A (did timeout: true)']);
 
