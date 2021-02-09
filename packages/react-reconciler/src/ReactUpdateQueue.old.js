@@ -167,6 +167,7 @@ export function initializeUpdateQueue<State>(fiber: Fiber): void {
   fiber.updateQueue = queue;
 }
 
+// 如文件开头注释所说，updateQueue 像 fiber 一样，分为 work-in-progress 和 current 两个
 export function cloneUpdateQueue<State>(
   current: Fiber,
   workInProgress: Fiber,
@@ -240,6 +241,9 @@ export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
   }
 }
 
+// 在 child render 过程中抛出的 update 为 capturedUpdate。
+// 如果 render 被取消那么此 update 就会被废弃。
+// 目前只看到 handleError中会抛出这种更新
 export function enqueueCapturedUpdate<State>(
   workInProgress: Fiber,
   capturedUpdate: Update<State>,

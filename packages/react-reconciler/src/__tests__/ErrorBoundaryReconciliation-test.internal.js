@@ -19,35 +19,35 @@ describe('ErrorBoundaryReconciliation', () => {
     Scheduler = require('scheduler');
 
     DidCatchErrorBoundary = class extends React.Component {
-      state = {error: null};
+      state = { error: null };
       componentDidCatch(error) {
-        this.setState({error});
+        this.setState({ error });
       }
       render() {
         return this.state.error
           ? React.createElement(this.props.fallbackTagName, {
-              prop: 'ErrorBoundary',
-            })
+            prop: 'ErrorBoundary',
+          })
           : this.props.children;
       }
     };
 
     GetDerivedErrorBoundary = class extends React.Component {
-      state = {error: null};
+      state = { error: null };
       static getDerivedStateFromError(error) {
-        return {error};
+        return { error };
       }
       render() {
         return this.state.error
           ? React.createElement(this.props.fallbackTagName, {
-              prop: 'ErrorBoundary',
-            })
+            prop: 'ErrorBoundary',
+          })
           : this.props.children;
       }
     };
 
     const InvalidType = undefined;
-    BrokenRender = ({fail}) =>
+    BrokenRender = ({ fail }) =>
       fail ? <InvalidType /> : <span prop="BrokenRender" />;
   });
 
@@ -57,7 +57,7 @@ describe('ErrorBoundaryReconciliation', () => {
         <ErrorBoundary fallbackTagName={fallbackTagName}>
           <BrokenRender fail={false} />
         </ErrorBoundary>,
-        {unstable_isConcurrent: isConcurrent},
+        { unstable_isConcurrent: isConcurrent },
       );
       Scheduler.unstable_flushAll();
       expect(renderer).toMatchRenderedOutput(<span prop="BrokenRender" />);

@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {DOMTopLevelEventType} from 'legacy-events/TopLevelEventTypes';
+import type { DOMTopLevelEventType } from 'legacy-events/TopLevelEventTypes';
 
 import {
   unsafeCastStringToDOMTopLevelType,

@@ -21,7 +21,7 @@ import {
   forceFrameRate,
   requestPaint,
 } from './SchedulerHostConfig';
-import {push, pop, peek} from './SchedulerMinHeap';
+import { push, pop, peek } from './SchedulerMinHeap';
 
 // TODO: Use symbols?
 import {
@@ -270,7 +270,7 @@ function unstable_next(eventHandler) {
 
 function unstable_wrapCallback(callback) {
   var parentPriorityLevel = currentPriorityLevel;
-  return function() {
+  return function () {
     // This is a fork of runWithPriority, inlined for performance.
     var previousPriorityLevel = currentPriorityLevel;
     currentPriorityLevel = parentPriorityLevel;
@@ -448,8 +448,8 @@ export {
 
 export const unstable_Profiling = enableProfiling
   ? {
-      startLoggingProfilingEvents,
-      stopLoggingProfilingEvents,
-      sharedProfilingBuffer,
-    }
+    startLoggingProfilingEvents,
+    stopLoggingProfilingEvents,
+    sharedProfilingBuffer,
+  }
   : null;

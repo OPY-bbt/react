@@ -15,7 +15,7 @@ function normalizeCodeLocInfo(str) {
   //  at Component (/path/filename.js:123:45)
   // React format:
   //    in Component (at filename.js:123)
-  return str.replace(/\n +(?:at|in) ([\S]+)[^\n]*/g, function(m, name) {
+  return str.replace(/\n +(?:at|in) ([\S]+)[^\n]*/g, function (m, name) {
     return '\n    in ' + name + ' (at **)';
   });
 }
@@ -29,7 +29,7 @@ const createMatcherFor = (consoleMethod, matcherName) =>
       } else if (!Array.isArray(expectedMessages)) {
         throw Error(
           `${matcherName}() requires a parameter of type string or an array of strings ` +
-            `but was given ${typeof expectedMessages}.`
+          `but was given ${typeof expectedMessages}.`
         );
       }
       if (
@@ -38,14 +38,14 @@ const createMatcherFor = (consoleMethod, matcherName) =>
       ) {
         throw new Error(
           `${matcherName}() second argument, when present, should be an object. ` +
-            'Did you forget to wrap the messages into an array?'
+          'Did you forget to wrap the messages into an array?'
         );
       }
       if (arguments.length > 3) {
         // `matcher` comes from Jest, so it's more than 2 in practice
         throw new Error(
           `${matcherName}() received more than two arguments. ` +
-            'Did you forget to wrap the messages into an array?'
+          'Did you forget to wrap the messages into an array?'
         );
       }
 
@@ -228,18 +228,16 @@ const createMatcherFor = (consoleMethod, matcherName) =>
         } else {
           throw Error(
             `The second argument for ${matcherName}(), when specified, must be an object. It may have a ` +
-              `property called "withoutStack" whose value may be undefined, boolean, or a number. ` +
-              `Instead received ${typeof withoutStack}.`
+            `property called "withoutStack" whose value may be undefined, boolean, or a number. ` +
+            `Instead received ${typeof withoutStack}.`
           );
         }
 
         if (lastWarningWithMismatchingFormat !== null) {
           return {
             message: () =>
-              `Received ${
-                lastWarningWithMismatchingFormat.args.length
-              } arguments for a message with ${
-                lastWarningWithMismatchingFormat.expectedArgCount
+              `Received ${lastWarningWithMismatchingFormat.args.length
+              } arguments for a message with ${lastWarningWithMismatchingFormat.expectedArgCount
               } placeholders:\n  ${this.utils.printReceived(
                 lastWarningWithMismatchingFormat.format
               )}`,
@@ -258,13 +256,13 @@ const createMatcherFor = (consoleMethod, matcherName) =>
           };
         }
 
-        return {pass: true};
+        return { pass: true };
       }
     } else {
       // Any uncaught errors or warnings should fail tests in production mode.
       callback();
 
-      return {pass: true};
+      return { pass: true };
     }
   };
 

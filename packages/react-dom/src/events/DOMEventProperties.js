@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {EventPriority} from 'shared/ReactTypes';
+import type { EventPriority } from 'shared/ReactTypes';
 import type {
   TopLevelType,
   DOMTopLevelEventType,
@@ -24,7 +24,7 @@ import {
   ContinuousEvent,
 } from 'shared/ReactTypes';
 
-import {enableCreateEventHandleAPI} from 'shared/ReactFeatureFlags';
+import { enableCreateEventHandleAPI } from 'shared/ReactFeatureFlags';
 
 // Needed for SimpleEventPlugin, rather than
 // do it in two places, which duplicates logic
@@ -37,7 +37,7 @@ export const simpleEventPluginEventTypes = {};
 export const topLevelEventsToDispatchConfig: Map<
   TopLevelType,
   DispatchConfig | CustomDispatchConfig,
-> = new Map();
+  > = new Map();
 
 const eventPriorities = new Map();
 
@@ -246,7 +246,7 @@ export function getEventPriorityForListenerSystem(
   if (__DEV__) {
     console.warn(
       'The event "type" provided to createEventHandle() does not have a known priority type.' +
-        ' It is recommended to provide a "priority" option to specify a priority.',
+      ' It is recommended to provide a "priority" option to specify a priority.',
     );
   }
   return ContinuousEvent;

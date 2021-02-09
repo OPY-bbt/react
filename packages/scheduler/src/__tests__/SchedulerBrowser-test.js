@@ -77,7 +77,7 @@ describe('SchedulerBrowser', () => {
     // TODO: Scheduler no longer requires these methods to be polyfilled. But
     // maybe we want to continue warning if they don't exist, to preserve the
     // option to rely on it in the future?
-    window.requestAnimationFrame = window.cancelAnimationFrame = () => {};
+    window.requestAnimationFrame = window.cancelAnimationFrame = () => { };
 
     window.setTimeout = (cb, delay) => {
       const id = timerIDCounter++;

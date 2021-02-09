@@ -7,9 +7,9 @@
  * @flow
  */
 
-import type {Fiber} from 'react-reconciler/src/ReactInternalTypes';
-import type {FiberRoot} from 'react-reconciler/src/ReactInternalTypes';
-import type {Instance, TextInstance} from './ReactTestHostConfig';
+import type { Fiber } from 'react-reconciler/src/ReactInternalTypes';
+import type { FiberRoot } from 'react-reconciler/src/ReactInternalTypes';
+import type { Instance, TextInstance } from './ReactTestHostConfig';
 
 import * as Scheduler from 'scheduler/unstable_mock';
 import {
@@ -21,7 +21,7 @@ import {
   batchedUpdates,
   act,
 } from 'react-reconciler/src/ReactFiberReconciler';
-import {findCurrentFiberUsingSlowPath} from 'react-reconciler/src/ReactFiberTreeReflection';
+import { findCurrentFiberUsingSlowPath } from 'react-reconciler/src/ReactFiberTreeReflection';
 import {
   Fragment,
   FunctionComponent,
@@ -45,8 +45,8 @@ import invariant from 'shared/invariant';
 import getComponentName from 'shared/getComponentName';
 import ReactVersion from 'shared/ReactVersion';
 
-import {getPublicInstance} from './ReactTestHostConfig';
-import {ConcurrentRoot, LegacyRoot} from 'react-reconciler/src/ReactRootTags';
+import { getPublicInstance } from './ReactTestHostConfig';
+import { ConcurrentRoot, LegacyRoot } from 'react-reconciler/src/ReactRootTags';
 
 type TestRendererOptions = {
   createNodeMock: (element: React$Element<any>) => any,
@@ -56,9 +56,9 @@ type TestRendererOptions = {
 
 type ReactTestRendererJSON = {|
   type: string,
-  props: {[propName: string]: any, ...},
-  children: null | Array<ReactTestRendererNode>,
-  $$typeof?: Symbol, // Optional because we add it with defineProperty().
+    props: { [propName: string]: any, ... },
+children: null | Array < ReactTestRendererNode >,
+  $$typeof ?: Symbol, // Optional because we add it with defineProperty().
 |};
 type ReactTestRendererNode = ReactTestRendererJSON | string;
 
@@ -72,7 +72,7 @@ type FindOptions = $Shape<{
 export type Predicate = (node: ReactTestInstance) => ?boolean;
 
 const defaultTestOptions = {
-  createNodeMock: function() {
+  createNodeMock: function () {
     return null;
   },
 };
@@ -91,7 +91,7 @@ function toJSON(inst: Instance | TextInstance): ReactTestRendererNode | null {
       /* eslint-disable no-unused-vars */
       // We don't include the `children` prop in JSON.
       // Instead, we will include the actual rendered children.
-      const {children, ...props} = inst.props;
+      const { children, ...props } = inst.props;
       /* eslint-enable */
       let renderedChildren = null;
       if (inst.children && inst.children.length) {
@@ -146,7 +146,7 @@ function nodeAndSiblingsArray(nodeWithSibling) {
 
 function flatten(arr) {
   const result = [];
-  const stack = [{i: 0, array: arr}];
+  const stack = [{ i: 0, array: arr }];
   while (stack.length) {
     const n = stack.pop();
     while (n.i < n.array.length) {
@@ -154,7 +154,7 @@ function flatten(arr) {
       n.i += 1;
       if (Array.isArray(el)) {
         stack.push(n);
-        stack.push({i: 0, array: el});
+        stack.push({ i: 0, array: el });
         break;
       }
       result.push(el);
@@ -176,7 +176,7 @@ function toTree(node: ?Fiber) {
       return {
         nodeType: 'component',
         type: node.type,
-        props: {...node.memoizedProps},
+        props: { ...node.memoizedProps },
         instance: node.stateNode,
         rendered: childrenToTree(node.child),
       };
@@ -185,7 +185,7 @@ function toTree(node: ?Fiber) {
       return {
         nodeType: 'component',
         type: node.type,
-        props: {...node.memoizedProps},
+        props: { ...node.memoizedProps },
         instance: null,
         rendered: childrenToTree(node.child),
       };
@@ -193,7 +193,7 @@ function toTree(node: ?Fiber) {
       return {
         nodeType: 'block',
         type: node.type,
-        props: {...node.memoizedProps},
+        props: { ...node.memoizedProps },
         instance: null,
         rendered: childrenToTree(node.child),
       };
@@ -201,7 +201,7 @@ function toTree(node: ?Fiber) {
       return {
         nodeType: 'host',
         type: node.type,
-        props: {...node.memoizedProps},
+        props: { ...node.memoizedProps },
         instance: null, // TODO: use createNodeMock here somehow?
         rendered: flatten(nodeAndSiblingsArray(node.child).map(toTree)),
       };
@@ -283,7 +283,7 @@ class ReactTestInstance {
     invariant(
       fiber !== null,
       "Can't read from currently-mounting component. This error is likely " +
-        'caused by a bug in React. Please file an issue.',
+      'caused by a bug in React. Please file an issue.',
     );
     return fiber;
   }
@@ -292,7 +292,7 @@ class ReactTestInstance {
     invariant(
       validWrapperTypes.has(fiber.tag),
       'Unexpected object passed to ReactTestInstance constructor (tag: %s). ' +
-        'This is probably a bug in React.',
+      'This is probably a bug in React.',
       fiber.tag,
     );
     this._fiber = fiber;
@@ -339,21 +339,21 @@ class ReactTestInstance {
   // Custom search functions
   find(predicate: Predicate): ReactTestInstance {
     return expectOne(
-      this.findAll(predicate, {deep: false}),
+      this.findAll(predicate, { deep: false }),
       `matching custom predicate: ${predicate.toString()}`,
     );
   }
 
   findByType(type: any): ReactTestInstance {
     return expectOne(
-      this.findAllByType(type, {deep: false}),
+      this.findAllByType(type, { deep: false }),
       `with node type: "${getComponentName(type) || 'Unknown'}"`,
     );
   }
 
   findByProps(props: Object): ReactTestInstance {
     return expectOne(
-      this.findAllByProps(props, {deep: false}),
+      this.findAllByProps(props, { deep: false }),
       `with props: ${JSON.stringify(props)}`,
     );
   }
@@ -536,7 +536,7 @@ function create(element: React$Element<any>, options: TestRendererOptions) {
     ({
       configurable: true,
       enumerable: true,
-      get: function() {
+      get: function () {
         if (root === null) {
           throw new Error("Can't access .root on unmounted test renderer");
         }
@@ -577,8 +577,8 @@ injectIntoDevTools({
     throw new Error('TestRenderer does not support findFiberByHostInstance()');
   }: any),
   bundleType: __DEV__ ? 1 : 0,
-  version: ReactVersion,
-  rendererPackageName: 'react-test-renderer',
+    version: ReactVersion,
+      rendererPackageName: 'react-test-renderer',
 });
 
 export {
