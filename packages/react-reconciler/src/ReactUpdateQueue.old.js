@@ -207,6 +207,10 @@ export function createUpdate(
   return update;
 }
 
+// pending 是 last, pending.next 是 first
+// 没有如文件开头所说添加到 current 和 work-in-progress queue 上
+// 这里只是添加到了 current queue
+// 难道是因为 pending 在 current 和 work-in-progress 中共享的 ???
 export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
   const updateQueue = fiber.updateQueue;
   if (updateQueue === null) {
@@ -243,7 +247,7 @@ export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
 
 // 在 child render 过程中抛出的 update 为 capturedUpdate。
 // 如果 render 被取消那么此 update 就会被废弃。
-// 目前只看到 handleError中会抛出这种更新
+// 目前只看到 handleError 中会抛出这种更新
 export function enqueueCapturedUpdate<State>(
   workInProgress: Fiber,
   capturedUpdate: Update<State>,
@@ -406,6 +410,9 @@ function getStateFromUpdate<State>(
   return prevState;
 }
 
+// 通过 pendingQueue 计算 updateQueue 上的 baseState、firstBaseUpdate、lastBaseUpdate；
+// 具体逻辑可以看文件开头逻辑，跳过低优先级 update 时，上一个 update state 就是 baseState
+// update 的 callback 会被放入 effects 中
 export function processUpdateQueue<State>(
   workInProgress: Fiber,
   props: any,
@@ -611,6 +618,7 @@ export function checkHasForceUpdateAfterProcessing(): boolean {
   return hasForceUpdate;
 }
 
+// 调用 queue.effects 中的 callback
 export function commitUpdateQueue<State>(
   finishedWork: Fiber,
   finishedQueue: UpdateQueue<State>,
