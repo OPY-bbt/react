@@ -12,8 +12,79 @@
 <body>
   <div id="app"></div>
   <script>
+
+    // class A extends React.Component {
+    //   constructor() {
+    //     super();
+
+    //     this.state = { count: 0 };
+    //   }
+    //   componentDidMount() {
+    //     // setTimeout(() => {
+    //     //   this.setState({ count: 1 });
+    //     // }, 1000)
+    //     // this.setState({ count: 1 });
+    //     // this.setState({ count: 1 });
+    //   }
+    //   render() {
+    //     console.log('render');
+    //     return React.createElement('p', null, this.state.count);
+    //   }
+    // }
+
+    // function B() {
+    //   const [count, setCount] = React.useState(0);
+
+    //   React.useEffect(() => {
+    //     setCount(1);
+    //   }, []);
+
+    //   return React.createElement('p', null, count);
+    // }
+    class A extends React.Component {
+      render() {
+        console.log('render A');
+        return this.props.children;
+      }
+    }
+
+    class B extends React.Component {      
+      render() {
+        console.log('render B');
+        return this.props.children;
+      }
+    }
+
+    class C extends React.Component {
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          count: 0,
+        };
+      }
+
+      componentDidMount() {
+        // setTimeout(() => {
+
+          
+        // }, 2000);
+        this.setState({
+          count: 1,
+        });
+      }
+
+      render() {
+        return React.createElement('p', null, this.state.count);
+      }
+    }
+
     ReactDOM.render(
-      React.createElement('p', null, 'hello'),
+      React.createElement(
+        A,
+        null,
+        React.createElement(B, null, React.createElement(C, null))
+      ),
       document.body.querySelector('#app'),
     );
   </script>
